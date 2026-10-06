@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ReVest • Aluguel de Roupas</title>
+<style>
+  :root{
+    --bg:#f8f5f2; --card:#fff; --text:#282321; --muted:#817873;
+    --accent:#9b6b55; --accent-dark:#704837; --line:#e9e1dc;
+    --shadow:0 14px 35px rgba(65,43,34,.10); --radius:22px;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0; min-height:100vh; display:flex; justify-content:center; align-items:center;
+    background:linear-gradient(135deg,#eee7e2,#d9cec6); font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+    color:var(--text);
+  }
+  .phone{
+    width:390px; height:844px; max-width:100vw; max-height:100vh; background:var(--bg);
+    overflow:hidden; position:relative; box-shadow:0 25px 70px rgba(40,25,18,.25);
+    border:8px solid #211b18; border-radius:42px;
+  }
+  .status{height:27px;background:#fff;padding:7px 18px 0;display:flex;justify-content:space-between;font-size:11px;font-weight:700}
+  .app{height:calc(100% - 27px);overflow-y:auto;padding-bottom:82px}
+  header{padding:18px 20px 8px;background:#fff;position:sticky;top:0;z-index:5}
+  .top{display:flex;justify-content:space-between;align-items:center}
+  .brand{font-family:Georgia,serif;font-size:27px;font-weight:700;letter-spacing:-1px}
+  .brand span{color:var(--accent)}
+  .icon-btn{border:0;background:#f4eeea;width:42px;height:42px;border-radius:50%;font-size:19px;cursor:pointer;position:relative}
+  .badge{position:absolute;right:-2px;top:-2px;background:var(--accent);color:#fff;font-size:10px;min-width:18px;height:18px;border-radius:50%;display:grid;place-items:center}
+  .search{margin-top:15px;display:flex;align-items:center;gap:9px;background:#f7f2ef;border:1px solid var(--line);padding:0 14px;border-radius:15px}
+  .search input{width:100%;border:0;outline:0;background:transparent;padding:13px 0;font-size:14px}
+  .hero{margin:18px 20px;background:linear-gradient(135deg,#6f4d40,#b58c77);color:white;border-radius:25px;padding:23px;overflow:hidden;position:relative}
+  .hero:after{content:"✦";position:absolute;font-size:110px;right:-4px;top:-30px;opacity:.12}
+  .hero small{opacity:.82}.hero h1{font-family:Georgia,serif;font-size:28px;line-height:1.08;margin:7px 0 8px;max-width:245px}
+  .hero p{font-size:12px;max-width:250px;opacity:.9;margin:0 0 15px}
+  .cta{border:0;background:#fff;color:#6f4d40;padding:10px 15px;border-radius:12px;font-weight:800;cursor:pointer}
+  .section{padding:0 20px;margin-top:20px}
+  .section-title{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+  .section-title h2{font-size:17px;margin:0}.section-title button{border:0;background:none;color:var(--accent);font-weight:700;cursor:pointer}
+  .filters{display:flex;gap:8px;overflow-x:auto;padding-bottom:4px}.filters button{white-space:nowrap;border:1px solid var(--line);background:#fff;border-radius:20px;padding:8px 12px;font-size:12px;cursor:pointer}.filters button.active{background:var(--text);color:#fff}
+  .grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  .item{background:#fff;border-radius:19px;overflow:hidden;box-shadow:0 5px 17px rgba(45,30,23,.06);position:relative}
+  .photo{height:154px;background-size:cover;background-position:center;display:flex;align-items:flex-end;padding:9px}
+  .tag{background:rgba(255,255,255,.9);backdrop-filter:blur(5px);padding:5px 8px;border-radius:9px;font-size:10px;font-weight:800}
+  .item-info{padding:11px}.item-info h3{font-size:13px;margin:0 0 4px}.item-info p{font-size:11px;color:var(--muted);margin:0 0 9px}
+  .item-bottom{display:flex;align-items:center;justify-content:space-between}.price{font-weight:800;font-size:13px}.price span{font-weight:500;color:var(--muted);font-size:10px}
+  .add{border:0;background:var(--accent);color:#fff;border-radius:10px;padding:8px 10px;font-size:11px;font-weight:800;cursor:pointer}.add:hover{background:var(--accent-dark)}
+  .promo{background:#fff;border:1px solid var(--line);border-radius:18px;padding:15px;display:flex;gap:12px;align-items:center}.promo .emoji{font-size:28px}.promo h3{margin:0 0 3px;font-size:13px}.promo p{margin:0;color:var(--muted);font-size:11px}
+  .bottom{position:absolute;bottom:0;left:0;right:0;height:70px;background:rgba(255,255,255,.95);backdrop-filter:blur(12px);border-top:1px solid var(--line);display:flex;justify-content:space-around;align-items:center;z-index:10}
+  .nav{border:0;background:none;color:var(--muted);font-size:10px;font-weight:700;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:5px}.nav.active{color:var(--accent)}.nav b{font-size:20px}
+  .toast{position:absolute;left:20px;right:20px;bottom:82px;background:#2b2421;color:#fff;padding:13px 15px;border-radius:14px;font-size:12px;opacity:0;transform:translateY(10px);pointer-events:none;transition:.25s;z-index:20}.toast.show{opacity:1;transform:none}
+  .cart-panel{position:absolute;inset:0;background:rgba(25,19,16,.35);z-index:30;display:none;align-items:flex-end}.cart-panel.open{display:flex}
+  .cart{background:#fff;width:100%;max-height:78%;border-radius:28px 28px 0 0;padding:20px;display:flex;flex-direction:column}
+  .cart-head{display:flex;justify-content:space-between;align-items:center}.cart-head h2{margin:0;font-family:Georgia,serif}.close{border:0;background:#f4eeea;border-radius:50%;width:35px;height:35px;cursor:pointer}
+  .cart-list{overflow:auto;margin:15px 0}.cart-row{display:flex;gap:10px;padding:10px 0;border-bottom:1px solid var(--line);align-items:center}.thumb{width:48px;height:58px;border-radius:10px;background-size:cover;background-position:center}.cart-row strong{font-size:12px}.cart-row small{display:block;color:var(--muted);margin-top:3px}.remove{margin-left:auto;border:0;background:none;color:#a65e4b;cursor:pointer}
+  .total{display:flex;justify-content:space-between;font-weight:800;padding:10px 0}.checkout{border:0;background:var(--text);color:#fff;border-radius:14px;padding:14px;font-weight:800;cursor:pointer}
+  .empty{color:var(--muted);text-align:center;padding:25px;font-size:13px}
+  @media(max-height:700px){.phone{height:100vh;border-radius:0;border:0}.photo{height:130px}}
+</style>
+</head>
+<body>
+<div class="phone">
+  <div class="status"><span>19:55</span><span>● ● ▰</span></div>
+  <div class="app">
+    <header>
+      <div class="top"><div class="brand">Re<span>Vest</span></div><button class="icon-btn" onclick="openCart()">🛍️<span class="badge" id="badge">0</span></button></div>
+      <label class="search">⌕<input id="search" placeholder="Buscar vestido, blazer, conjunto..." oninput="render()"></label>
+    </header>
+
+    <section class="hero">
+      <small>NOVA COLEÇÃO</small><h1>Seu look, por uma fração do preço.</h1>
+      <p>Alugue peças especiais para festas, eventos e momentos inesquecíveis.</p>
+      <button class="cta" onclick="document.getElementById('pecas').scrollIntoView({behavior:'smooth'})">Explorar peças</button>
+    </section>
+
+    <section class="section" id="pecas">
+      <div class="section-title"><h2>Encontre seu look</h2><button onclick="clearSearch()">Ver todas</button></div>
+      <div class="filters">
+        <button class="active" onclick="filterCat('Todos',this)">Todos</button><button onclick="filterCat('Vestidos',this)">Vestidos</button><button onclick="filterCat('Conjuntos',this)">Conjuntos</button><button onclick="filterCat('Blazers',this)">Blazers</button>
+      </div>
+      <div class="grid" id="grid"></div>
+    </section>
+
+    
+    <section class="section" id="assinatura">
+      <div class="section-title">
+        <h2>Planos de assinatura</h2>
+        <button onclick="showToast('Escolha o plano ideal para você ✨')">Ver planos</button>
+      </div>
+      <div class="promo" style="display:block">
+        <div style="display:flex;justify-content:space-between;align-items:center;gap:10px">
+          <div>
+            <span class="tag" style="background:#f4ebe6;color:var(--accent)">MAIS POPULAR</span>
+            <h3 style="font-family:Georgia,serif;font-size:20px;margin:9px 0 4px">ReVest Plus</h3>
+            <p>Tenha acesso a benefícios exclusivos para seus aluguéis.</p>
+          </div>
+          <div style="text-align:right">
+            <strong style="font-size:20px">R$ 39,90</strong>
+            <small style="display:block;color:var(--muted)">/mês</small>
+          </div>
+        </div>
+        <div style="margin:14px 0 13px;display:grid;gap:7px;font-size:12px">
+          <div>✓ Frete grátis em 1 aluguel por mês</div>
+          <div>✓ Acesso antecipado a novas peças</div>
+          <div>✓ 10% de desconto em aluguéis extras</div>
+        </div>
+        <button class="checkout" style="width:100%" onclick="subscribe('ReVest Plus')">Assinar ReVest Plus</button>
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px">
+        <div class="promo" style="display:block;padding:13px">
+          <h3 style="font-family:Georgia,serif;font-size:16px">ReVest Basic</h3>
+          <p style="margin:5px 0 10px">Benefícios essenciais.</p>
+          <strong>R$ 19,90<span style="font-size:10px;font-weight:500;color:var(--muted)">/mês</span></strong>
+          <button class="add" style="width:100%;margin-top:10px" onclick="subscribe('ReVest Basic')">Assinar</button>
+        </div>
+        <div class="promo" style="display:block;padding:13px">
+          <h3 style="font-family:Georgia,serif;font-size:16px">ReVest Premium</h3>
+          <p style="margin:5px 0 10px">Para quem aluga sempre.</p>
+          <strong>R$ 69,90<span style="font-size:10px;font-weight:500;color:var(--muted)">/mês</span></strong>
+          <button class="add" style="width:100%;margin-top:10px" onclick="subscribe('ReVest Premium')">Assinar</button>
+        </div>
+      </div>
+    </section>
+
+<section class="section" id="divulgar">
+      <div class="section-title"><h2>Divulgue suas roupas</h2></div>
+      <div class="promo"><div class="emoji">👗</div><div><h3>Tem uma peça parada no armário?</h3><p>Cadastre sua roupa e ganhe com cada aluguel.</p></div><button class="add" onclick="showToast('Formulário de divulgação em breve!')">Divulgar</button></div>
+    </section>
+  </div>
+
+  <nav class="bottom">
+    <button class="nav active" onclick="scrollTopPage()"><b>⌂</b>Início</button>
+    <button class="nav" onclick="document.getElementById('pecas').scrollIntoView({behavior:'smooth'})"><b>♡</b>Peças</button>
+    <button class="nav" onclick="openCart()"><b>🛍</b>Carrinho</button>
+    <button class="nav" onclick="document.getElementById('assinatura').scrollIntoView({behavior:'smooth'})"><b>★</b>Planos</button>
+  </nav>
+
+  <div class="toast" id="toast"></div>
+
+  <div class="cart-panel" id="cartPanel" onclick="if(event.target===this)closeCart()">
+    <div class="cart">
+      <div class="cart-head"><h2>Seu carrinho</h2><button class="close" onclick="closeCart()">✕</button></div>
+      <div class="cart-list" id="cartList"></div>
+      <div class="total"><span>Total estimado</span><span id="total">R$ 0,00</span></div>
+      <button class="checkout" onclick="checkout()">Continuar para reserva</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const pieces=[
+ {id:1,name:'Vestido Aurora',cat:'Vestidos',price:89,img:'https://images.unsplash.com/photo-1595777457583-95e059d581b8?auto=format&fit=crop&w=600&q=80'},
+ {id:2,name:'Conjunto Siena',cat:'Conjuntos',price:75,img:'https://images.unsplash.com/photo-1483985988355-763728e1935b?auto=format&fit=crop&w=600&q=80'},
+ {id:3,name:'Blazer Paris',cat:'Blazers',price:69,img:'https://images.unsplash.com/photo-1591369822096-ffd140ec948f?auto=format&fit=crop&w=600&q=80'},
+ {id:4,name:'Vestido Luna',cat:'Vestidos',price:99,img:'https://images.unsplash.com/photo-1566174053879-31528523f8ae?auto=format&fit=crop&w=600&q=80'},
+ {id:5,name:'Conjunto Mia',cat:'Conjuntos',price:79,img:'https://images.unsplash.com/photo-1496747611176-843222e1e57c?auto=format&fit=crop&w=600&q=80'},
+ {id:6,name:'Blazer Milano',cat:'Blazers',price:72,img:'https://images.unsplash.com/photo-1551028719-00167b16eac5?auto=format&fit=crop&w=600&q=80'}
+];
+let cart=[], category='Todos';
+
+function subscribe(plan){
+ showToast(plan + ' selecionado! ✨');
+}
+function render(){
+ const q=document.getElementById('search').value.toLowerCase();
+ const filtered=pieces.filter(p=>(category==='Todos'||p.cat===category)&&(p.name.toLowerCase().includes(q)||p.cat.toLowerCase().includes(q)));
+ document.getElementById('grid').innerHTML=filtered.length?filtered.map(p=>`
+  <article class="item">
+   <div class="photo" style="background-image:url('${p.img}')"><span class="tag">${p.cat}</span></div>
+   <div class="item-info"><h3>${p.name}</h3><p>Aluguel por 4 dias</p><div class="item-bottom"><div class="price">R$ ${p.price.toFixed(2).replace('.',',')} <span>/período</span></div><button class="add" onclick="addToCart(${p.id})">+ Selecionar</button></div></div>
+  </article>`).join(''):'<div class="empty" style="grid-column:1/-1">Nenhuma peça encontrada.</div>';
+ updateCart();
+}
+function filterCat(cat,el){category=cat;document.querySelectorAll('.filters button').forEach(b=>b.classList.remove('active'));el.classList.add('active');render()}
+function clearSearch(){document.getElementById('search').value='';category='Todos';document.querySelectorAll('.filters button').forEach(b=>b.classList.remove('active'));document.querySelector('.filters button').classList.add('active');render()}
+function addToCart(id){if(!cart.includes(id)){cart.push(id);showToast('Peça adicionada ao carrinho ✨')}else showToast('Essa peça já está no carrinho');updateCart()}
+function updateCart(){
+ document.getElementById('badge').textContent=cart.length;
+ const list=document.getElementById('cartList');
+ if(!cart.length){list.innerHTML='<div class="empty">Seu carrinho está vazio.<br>Selecione uma peça para começar.</div>'}
+ else list.innerHTML=cart.map(id=>{let p=pieces.find(x=>x.id===id);return `<div class="cart-row"><div class="thumb" style="background-image:url('${p.img}')"></div><div><strong>${p.name}</strong><small>4 dias • R$ ${p.price.toFixed(2).replace('.',',')}</small></div><button class="remove" onclick="removeCart(${id})">Remover</button></div>`}).join('');
+ const total=cart.reduce((s,id)=>s+pieces.find(p=>p.id===id).price,0);
+ document.getElementById('total').textContent='R$ '+total.toFixed(2).replace('.',',');
+}
+function removeCart(id){cart=cart.filter(x=>x!==id);updateCart();showToast('Peça removida')}
+function openCart(){document.getElementById('cartPanel').classList.add('open');updateCart()}
+function closeCart(){document.getElementById('cartPanel').classList.remove('open')}
+function checkout(){if(!cart.length)return showToast('Adicione pelo menos uma peça');showToast('Reserva iniciada! ✨')}
+function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');clearTimeout(window.tt);window.tt=setTimeout(()=>t.classList.remove('show'),2200)}
+function scrollTopPage(){document.querySelector('.app').scrollTo({top:0,behavior:'smooth'})}
+render();
+</script>
+</body>
+</html>
